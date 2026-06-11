@@ -15,25 +15,19 @@ const TIME_SLOTS = [
 // Получение всех занятых слотов для даты с сервера
 async function getBookedSlots(date) {
   try {
-    const response = await fetch('/api/orders');
+    const response = await fetch(`/api/booked-slots?date=${date}`);
     
-    // Проверка на HTML-ответ (ошибку сервера)
-    if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) {
-      const errorText = await response.text();
-      console.error('Сервер вернул ошибку вместо JSON:', response.status, errorText.substring(0, 200));
-      return [];
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Ошибка сервера');
     }
-
-    const orders = await response.json();
-    return orders
-      .filter(order => order.date === date)
-      .map(order => order.time);
+    
+    return await response.json();
   } catch (error) {
-    console.error('Ошибка загрузки слотов:', error);
-    return [];
+    console.error('Ошибка получения занятых слотов:', error);
+    throw error;
   }
 }
-
 // Обновление доступных временных слотов
 async function updateTimeSlots(selectedDate) {
   const timeSelect = document.getElementById('time');
