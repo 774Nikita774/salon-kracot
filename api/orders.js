@@ -1,5 +1,5 @@
 import sql from '../lib/db.js';
-import { authenticateRequest } from '../lib/auth.js';
+import { authenticateRequest } from './auth.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
