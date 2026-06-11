@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход в админ-панель — LUXE studio</title>
+  <link rel="stylesheet" href="./styles/styles.css">
+  <style>
+    .login-wrapper {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .login-card {
+      background: var(--color-light);
+      border: var(--border);
+      border-radius: var(--border-radius-large);
+      box-shadow: var(--shadow);
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+    .login-card h2 {
+      margin-bottom: 8px;
+    }
+    .login-card p {
+      color: var(--color-gray-alt);
+      margin-bottom: 32px;
+    }
+    .login-card input {
+      width: 100%;
+      height: 48px;
+      padding: 0 20px;
+      border: var(--border);
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+    .login-card button {
+      width: 100%;
+      height: 48px;
+      background: var(--color-dark);
+      color: var(--color-light);
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .login-card button:hover {
+      background: var(--color-accent);
+      color: var(--color-dark);
+    }
+    .login-error {
+      color: #d32f2f;
+      font-size: 14px;
+      margin-top: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner container">
+      <a class="header__logo logo" href="/">
+        <img class="logo__image" src="images/woman-hair.png" alt="LUXE studio" width="100" height="100" loading="lazy" />
+      </a>
+      <nav class="header__menu hidden-mobile">
+        <ul class="header__menu-list">
+          <li><a href="/" class="header__menu-link">Главная</a></li>
+          <li><a href="/#products" class="header__menu-link">Услуги</a></li>
+          <li><a href="/#otzev" class="header__menu-link">Отзывы</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="login-wrapper">
+    <div class="login-card">
+      <h2>Админ-панель</h2>
+      <p>Введите пароль для доступа к управлению заказами</p>
+      <form id="loginForm">
+        <input type="password" id="passwordInput" placeholder="Пароль" required autocomplete="current-password">
+        <button type="submit">Войти</button>
+        <div class="login-error" id="loginError"></div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // Если уже авторизован — сразу редирект на заказы
+    if (localStorage.getItem('admin_token')) {
+      window.location.href = '/orders.html';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = document.getElementById('passwordInput').value;
+      const errorEl = document.getElementById('loginError');
+      errorEl.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          localStorage.setItem('admin_token', data.token);
+          window.location.href = '/orders.html';
+        } else {
+          errorEl.textContent = data.error || 'Ошибка входа';
+          errorEl.style.display = 'block';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Ошибка соединения с сервером';
+        errorEl.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

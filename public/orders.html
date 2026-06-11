@@ -343,6 +343,26 @@
     const API_BASE = '/api';
     let allOrders = [];
 
+    // === ПРОВЕРКА АВТОРИЗАЦИИ ===
+    (function checkAuth() {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        window.location.replace('/admin-login.html');
+        return;
+      }
+      // Декодируем payload чтобы проверить срок действия
+      try {
+        const payload = JSON.parse(atob(token.split('.')[0].replace(/-/g,'+').replace(/_/g,'/')));
+        if (payload.exp < Date.now()) {
+          localStorage.removeItem('admin_token');
+          window.location.replace('/admin-login.html');
+        }
+      } catch {
+        localStorage.removeItem('admin_token');
+        window.location.replace('/admin-login.html');
+      }
+    })();
+
     // Функция показа уведомления
     function showToast(message, isError = false) {
       const existingToast = document.querySelector('.toast-message');
@@ -444,51 +464,62 @@
     }
     
     // загрузка заказов с сервера
-    async function fetchOrders() {
-      try {
-        const response = await fetch(`${API_BASE}/orders`);
-        if (!response.ok) throw new Error('Ошибка загрузки');
-        const data = await response.json();
-        allOrders = data;
-        const searchVal = document.getElementById('searchInput')?.value || '';
-        renderOrdersTable(searchVal);
-      } catch (err) {
-        console.error(err);
-        document.getElementById('ordersTableBody').innerHTML = '<tr><td colspan="6" class="empty-state">⚠️ Не удалось загрузить заказы. Проверьте соединение с сервером.</td></tr>';
-        showToast('Ошибка соединения с сервером', true);
-      }
+function getAuthHeaders() {
+  const token = localStorage.getItem('admin_token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
+async function fetchOrders() {
+  try {
+    const response = await fetch(`${API_BASE}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      body: JSON.stringify(testOrder)
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem('admin_token');
+      window.location.replace('/admin-login.html');
+      return;
     }
-    
-    // удаление заказа
-    async function deleteOrder(orderId) {
-      try {
-        // DELETE эндпоинт не реализован в предоставленном бэке, но мы добавим поддержку универсальную
-        // Так как в оригинальном index.js нет DELETE /api/orders/:id, реализуем через fetch с методом DELETE
-        // В реальности бэк должен поддерживать удаление. Я добавлю кастомный вызов, но чтобы не сломать существующее,
-        // можно создать фиктивный DELETE, однако лучше сделаем универсальный вызов, но т.к. в бэке нет,
-        // я расширю логику frontend, чтобы сообщить о необходимости добавить роут.
-        // Однако мы можем реализовать удаление локально, но для синхронизации с БД нужен бэк.
-        // Предположим, что разработчик добавит на сервере DELETE /api/orders/:id.
-        // Для демонстрации отправляем DELETE, но в текущем сервере его нет. Покажу fallback с локальным удалением (предупреждение).
-        const response = await fetch(`${API_BASE}/orders/${orderId}`, { method: 'DELETE' });
-        if (response.ok) {
-          showToast('Запись успешно удалена');
-          await fetchOrders(); // обновить список
-        } else {
-          // Если бэк не поддерживает DELETE, показываем сообщение с предложением добавить API.
-          // При этом локально убираем, но предупредим
-          if (response.status === 404 || response.status === 405) {
-            showToast('Функция удаления требует доработки API (добавьте DELETE /api/orders/:id)', true);
-            // Альтернатива: предложим удалить только из интерфейса? Неправильно. Лучше ничего не удалять.
-          } else {
-            showToast('Ошибка при удалении', true);
-          }
-        }
-      } catch (err) {
-        console.warn('Delete error', err);
-        showToast('Не удалось удалить заказ: сервер не поддерживает удаление. Обратитесь к администратору.', true);
-      }
+
+    if (!response.ok) throw new Error('Ошибка загрузки');
+    const data = await response.json();
+    allOrders = data;
+    const searchVal = document.getElementById('searchInput')?.value || '';
+    renderOrdersTable(searchVal);
+  } catch (err) {
+    console.error(err);
+    document.getElementById('ordersTableBody').innerHTML =
+      '<tr><td colspan="6" class="empty-state">⚠️ Не удалось загрузить заказы.</td></tr>';
+    showToast('Ошибка соединения с сервером', true);
+  }
+}
+
+async function deleteOrder(orderId) {
+  try {
+    const response = await fetch(`${API_BASE}/orders/${orderId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem('admin_token');
+      window.location.replace('/admin-login.html');
+      return;
     }
+
+    if (response.ok) {
+      showToast('Запись успешно удалена');
+      await fetchOrders();
+    } else {
+      showToast('Ошибка при удалении', true);
+    }
+  } catch (err) {
+    console.warn('Delete error', err);
+    showToast('Не удалось удалить заказ', true);
+  }
+}
     
     // Инициализация поиска
     function initSearch() {

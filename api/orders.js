@@ -1,10 +1,19 @@
-// api/orders.js
-import sql from '../lib/db.js'; // Теперь sql - это pool из pg
+import sql from '../lib/db.js';
+import { authenticateRequest } from '../lib/auth.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  // === Проверка авторизации для всех методов ===
+  const admin = authenticateRequest(req);
+  if (!admin) {
+    return res.status(401).json({ error: 'Требуется авторизация' });
+  }
+
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
