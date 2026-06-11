@@ -1,19 +1,14 @@
 {
   "name": "salon-kracot",
   "version": "1.0.0",
-  "description": "",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
     "dev": "vercel dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "dotenv": "^17.4.2",
     "pg": "^8.21.0"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
