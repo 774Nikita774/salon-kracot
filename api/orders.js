@@ -1,5 +1,5 @@
 // api/orders.js
-const pool = require('../lib/db');
+import sql from '../lib/db.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const { rows } = await pool.query('SELECT * FROM orders ORDER BY created_at DESC');
+      const { rows } = await sql.query('SELECT * FROM orders ORDER BY created_at DESC');
       res.status(200).json(rows);
     } catch (error) {
       console.error('Ошибка получения заказов:', error);
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         VALUES ($1, $2, $3, $4, $5) 
         RETURNING *
       `;
-      const { rows } = await pool.query(query, [name, phone, service, date, time]);
+      const { rows } = await sql.query(query, [name, phone, service, date, time]);
       res.status(201).json(rows[0]);
     } catch (error) {
       console.error('Ошибка создания заказа:', error);
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      await pool.query('DELETE FROM orders WHERE id = $1', [id]);
+      await sql.query('DELETE FROM orders WHERE id = $1', [id]);
       res.status(200).json({ message: 'Заказ успешно удален' });
     } catch (error) {
       console.error('Ошибка удаления заказа:', error);
