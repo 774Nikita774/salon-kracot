@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXE studio — Профессиональный косметологический уход</title>
+    <link rel="stylesheet" href="./public/styles/styles.css">
+</head>
+<body>
+    <!-- ШАПКА -->
+    <header class="header">
+        <div class="container header__inner">
+          <a href="#index.html" class="header__logo logo" href="/">
+            <img class="logo__image" src="./public/images/woman-hair.png" alt="LUXE studio" width="100" height="100" loading="lazy" />
+          </a>
+            
+            <nav class="header__menu hidden-mobile">
+                <ul class="header__menu-list">
+                    <li><a href="index.html" class="header__menu-link">Главная</a></li>
+                    <li><a href="#products" class="header__menu-link">Услуги</a></li>
+                    <li><a href="#otzev" class="header__menu-link">Отзывы</a></li>
+                    <li><a href="orders.html" class="header__menu-link">Заказы</a></li>
+                    <li><a href="services.html" class="button header__button">Записаться</a></li>
+                </ul>
+            </nav>
+
+            <!-- Кнопка мобильного меню (если нужна, стили уже есть в CSS) -->
+            <button class="burger-button visible-mobile" aria-label="Открыть меню"></button>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO СЕКЦИЯ -->
+        <section class="section hero">
+            <div class="container hero__main">
+                <div class="hero__body">
+                    <h1 class="hero__title">Профессиональный уход встречается с искренней заботой</h1>
+                    <p class="hero__description">
+                        Наши мастера следят за трендами и используют только проверенные методики, чтобы каждый ваш визит дарил не только идеальный результат, но и заряд отличного настроения.
+                    </p>
+                    <a href="services.html" class="button hero__button">Получить консультацию</a>
+                </div>
+                <img src="./public/images/hero-bg.svg" alt="LUXE studio" class="hero__image">
+            </div>
+
+            <div class="container">
+                <div class="hero__partners-list">
+                    <span style="font-weight: 500; color: var(--color-gray-alt);">Our partners</span>
+                    <img src="./public/images/partners/dior.png" alt="Dior" class="hero__partners-image">
+                    <img src="./public/images/partners/skinclinic.webp" alt="SkinClinic" class="hero__partners-image">
+                    <img src="./public/images/partners/Oxygen.webp" alt="Oxygen" class="hero__partners-image">
+                    <img src="./public/images/partners/Soskin.png" alt="SOSkin" class="hero__partners-image">
+                    <img src="./public/images/partners/onmacabin.png" alt="ONmacabin" class="hero__partners-image">
+                </div>
+            </div>
+        </section>
+
+        <!-- УСЛУГИ -->
+        <section class="section" id="products">
+            <div class="container">
+                <div class="section__header">
+                    <h2>Услуги</h2>
+                    <p class="section__description">
+                        Тут вы можете найти для себя то, что вам нужно, и увидеть, какими препаратами мы пользуемся.
+                    </p>
+                </div>
+
+                <div class="grid grid--2 services__list">
+                    <article class="service-card">
+                        <div class="service-card__body">
+                            <h3 class="service-card__title">SkinClinic</h3>
+                            <a href="https://alfabeautyclub.ru/brands/skinclinic/" target="_blank" class="service-card__link">
+                                <span class="service-card__link-icon-wrapper-label">Узнать больше</span>
+                                <span class="service-card__link-icon-wrapper">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 2L2 14M14 2H4M14 2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        </div>
+                        <img src="./public/images/services/1.png" alt="SkinClinic" class="service-card__image">
+                    </article>
+
+                    <article class="service-card service-card--accent-bg">
+                        <div class="service-card__body">
+                            <h3 class="service-card__title">OXYGEN</h3>
+                            <a href="https://www.onmacabim-israel.ru/catalog/oxygen/" target="_blank" class="service-card__link service-card__link--light">
+                                <span class="service-card__link-icon-wrapper-label">Узнать больше</span>
+                                <span class="service-card__link-icon-wrapper">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 2L2 14M14 2H4M14 2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        </div>
+                        <img src="./public/images/services/2.png" alt="OXYGEN" class="service-card__image">
+                    </article>
+
+                    <article class="service-card service-card--dark-bg">
+                        <div class="service-card__body">
+                            <h3 class="service-card__title" style="color: var(--color-light);">SOSkin</h3>
+                            <a href="https://alfabeautyclub.ru/brands/soskin/" target="_blank" class="service-card__link service-card__link--light">
+                                <span class="service-card__link-icon-wrapper-label">Узнать больше</span>
+                                <span class="service-card__link-icon-wrapper">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 2L2 14M14 2H4M14 2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        </div>
+                        <img src="./public/images/services/3.png" alt="SOSkin" class="service-card__image">
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-card__body">
+                            <h3 class="service-card__title">ONmacabin</h3>
+                            <a href="https://www.onmacabim-israel.ru/" target="_blank" class="service-card__link">
+                                <span class="service-card__link-icon-wrapper-label">Узнать больше</span>
+                                <span class="service-card__link-icon-wrapper">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 2L2 14M14 2H4M14 2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        </div>
+                        <img src="./public/images/services/4.png" alt="ONmacabin" class="service-card__image">
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- БАННЕР -->
+        <section class="section banner">
+            <div class="container banner__inner">
+                <div class="banner__body">
+                    <h2>Мы сделаем всё, чтобы вы остались довольны</h2>
+                    <p class="banner__description">
+                        Мы предлагаем множество процедур, после которых вы увидите эффект уже на следующий день! Приятным бонусом станет незабываемый массаж рук.
+                    </p>
+                    <a href="services.html" class="button">Получите бесплатное предложение</a>
+                </div>
+                <img src="./public/images/banner-bg.svg" alt="Banner" class="banner__image">
+            </div>
+        </section>
+
+        <!-- ОТЗЫВЫ -->
+        <section class="section reviews" id="otzev">
+            <div class="container">
+                <div class="section__header">
+                    <h2 style="color: var(--color-light);">Примеры из практики и отзывы</h2>
+                    <p class="section__description" style="color: var(--color-gray-alt);">
+                        Ознакомьтесь с реальными примерами работы нашего косметолога и мнением клиентов.
+                    </p>
+                </div>
+
+                <div class="grid grid--3">
+                    <div class="review-card">
+                        <div class="review-card__body">
+                            <p>У косметолога золотые руки! Делала чистку лица — всё очень аккуратно, безболезненно и стерильно. Кожа просто сияет.</p>
+                        </div>
+                        <div class="review-card__footer">
+                            <cite class="review-card__name">Марина</cite>
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-card__body">
+                            <p>Хожу сюда на курс пилингов. Результат превзошел ожидания: тон выровнялся, поры сузились. Очень грамотный специалист.</p>
+                        </div>
+                        <div class="review-card__footer">
+                            <cite class="review-card__name">Ольга</cite>
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-card__body">
+                            <p>Приятная атмосфера и профессиональный подход. Косметолог подобрала отличный домашний уход, который реально работает.</p>
+                        </div>
+                        <div class="review-card__footer">
+                            <cite class="review-card__name">Елена</cite>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- КОНТАКТЫ -->
+        <section class="section contact-us">
+            <div class="container">
+                <div class="section__header">
+                    <h2>Связаться с нами</h2>
+                    <p class="section__description">Мы будем рады ответить на все ваши вопросы в ближайшее время!</p>
+                </div>
+                <form class="contact-us__form">
+                    <div class="contact-us__body">
+                        <div class="field">
+                            <label class="field__label">Имя *</label>
+                            <input type="text" class="field__input" required placeholder="Ваше имя">
+                        </div>
+                        <div class="field">
+                            <label class="field__label">Почта *</label>
+                            <input type="email" class="field__input" required placeholder="example@mail.com">
+                        </div>
+                        <div class="field">
+                            <label class="field__label">Сообщение *</label>
+                            <textarea class="field__input field__input--textarea" required placeholder="Ваш вопрос..."></textarea>
+                        </div>
+                        <div class="checkbox">
+                            <label class="checkbox__label">
+                                <input type="checkbox" class="checkbox__input" required>
+                                <span class="checkbox__emulator"></span>
+                                <span class="checkbox__text">Я даю согласие на обработку <a href="#">персональных данных</a> *</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="button contact-us__button">Отправить сообщение</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="container footer__inner">
+            <div class="footer__navigation">
+                <a href="index.html" class="header__logo" style="color: var(--color-light);"><h3>LUXE studio</h3></a>
+                <ul class="footer__menu-list">
+                    <li><a href="#products" class="footer__menu-link">Услуги</a></li>
+                    <li><a href="#otzev" class="footer__menu-link">Отзывы</a></li>
+                    <li><a href="orders.html" class="footer__menu-link">Заказы</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer__body">
+                <div class="footer__contacts">
+                    <h4 class="footer__contacts-title">Связаться с нами:</h4>
+                    <address class="footer__contacts-body">
+                        <p>Email: <a href="mailto:cosmetolog@.com">cosmetolog@.com</a></p>
+                        <p>Phone: <a href="tel:89633822213">8-963-382-22-13</a></p>
+                        <p>Адрес: Лихачёва 23, Миасс, Челябинская обл., 456300</p>
+                    </address>
+                </div>
+            </div>
+
+            <div class="footer__extra">
+                <p>© 2026 LUXE studio</p>
+                <a href="#" class="footer__privacy-policy-link">Политика конфиденциальности</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
