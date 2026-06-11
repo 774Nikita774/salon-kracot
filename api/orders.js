@@ -1,5 +1,6 @@
+// api/orders.js
 import sql from '../lib/db.js';
-import { authenticateRequest } from './auth.js';
+import { authenticateRequest } from '../lib/auth.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,67 +9,65 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // === Проверка авторизации для всех методов ===
-  const admin = authenticateRequest(req);
-  if (!admin) {
-    return res.status(401).json({ error: 'Требуется авторизация' });
-  }
-
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method === 'GET') {
-    try {
-      const { rows } = await sql.query('SELECT * FROM orders ORDER BY created_at DESC');
-      res.status(200).json(rows);
-    } catch (error) {
-      console.error('Ошибка получения заказов:', error);
-      res.status(500).json({ error: 'Ошибка сервера при получении заказов' });
+  // === Авторизация требуется ТОЛЬКО для GET и DELETE ===
+  // POST остаётся публичным — клиенты создают записи
+  if (req.method === 'GET' || req.method === 'DELETE') {
+    const admin = authenticateRequest(req);
+    if (!admin) {
+      return res.status(401).json({ error: 'Требуется авторизация' });
     }
-  } 
-  
-  else if (req.method === 'POST') {
-    const { name, phone, service, date, time } = req.body;
-    
-    if (!name || !phone || !service || !date || !time) {
+  }
+
+  // === POST: создание записи (публичный) ===
+  if (req.method === 'POST') {
+    const { master, service, date, time, name, phone } = req.body;
+
+    if (!master || !service || !date || !time || !name || !phone) {
       return res.status(400).json({ error: 'Все поля обязательны' });
     }
 
     try {
-      const query = `
-        INSERT INTO orders (name, phone, service, date, time) 
-        VALUES ($1, $2, $3, $4, $5) 
+      const result = await sql`
+        INSERT INTO orders (master, service, date, time, name, phone)
+        VALUES (${master}, ${service}, ${date}, ${time}, ${name}, ${phone})
         RETURNING *
       `;
-      const { rows } = await sql.query(query, [name, phone, service, date, time]);
-      res.status(201).json(rows[0]);
-    } catch (error) {
-      console.error('Ошибка создания заказа:', error);
-      res.status(500).json({ error: 'Ошибка сервера при создании заказа' });
+      return res.status(201).json(result[0]);
+    } catch (err) {
+      console.error('POST /orders error:', err);
+      return res.status(500).json({ error: 'Ошибка сервера' });
     }
-  } 
-  
-  else if (req.method === 'DELETE') {
-    // Извлекаем ID из URL (например, /api/orders?id=5 или парсим путь)
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const id = url.searchParams.get('id') || url.pathname.split('/').pop();
-    
-    if (!id || isNaN(id)) {
-      return res.status(400).json({ error: 'Неверный ID заказа' });
+  }
+
+  // === GET: список всех записей (только админ) ===
+  if (req.method === 'GET') {
+    try {
+      const orders = await sql`
+        SELECT * FROM orders
+        ORDER BY date DESC, time DESC
+      `;
+      return res.status(200).json(orders);
+    } catch (err) {
+      console.error('GET /orders error:', err);
+      return res.status(500).json({ error: 'Ошибка сервера' });
+    }
+  }
+
+  // === DELETE: удаление записи (только админ) ===
+  if (req.method === 'DELETE') {
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({ error: 'Не указан ID' });
     }
 
     try {
-      await sql.query('DELETE FROM orders WHERE id = $1', [id]);
-      res.status(200).json({ message: 'Заказ успешно удален' });
-    } catch (error) {
-      console.error('Ошибка удаления заказа:', error);
-      res.status(500).json({ error: 'Ошибка сервера при удалении заказа' });
+      await sql`DELETE FROM orders WHERE id = ${id}`;
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error('DELETE /orders error:', err);
+      return res.status(500).json({ error: 'Ошибка сервера' });
     }
-  } 
-  
-  else {
-    res.status(405).json({ error: 'Метод не разрешен' });
   }
+
+  res.status(405).json({ error: 'Метод не разрешен' });
 }
