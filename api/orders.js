@@ -20,16 +20,16 @@ export default async function handler(req, res) {
 
   // === POST: создание записи (публичный) ===
   if (req.method === 'POST') {
-    const { master, service, date, time, name, phone } = req.body;
+    const { service, date, time, name, phone } = req.body;
 
-    if (!master || !service || !date || !time || !name || !phone) {
+    if (!service || !date || !time || !name || !phone) {
       return res.status(400).json({ error: 'Все поля обязательны' });
     }
 
     try {
       const result = await sql`
         INSERT INTO orders (master, service, date, time, name, phone)
-        VALUES (${master}, ${service}, ${date}, ${time}, ${name}, ${phone})
+        VALUES (${service}, ${date}, ${time}, ${name}, ${phone})
         RETURNING *
       `;
       return res.status(201).json(result[0]);
