@@ -1,6 +1,6 @@
 // api/orders.js
 import sql from '../lib/db.js';
-import { authenticateRequest } from 'auth.js';
+import { authenticateRequest } from './auth.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
