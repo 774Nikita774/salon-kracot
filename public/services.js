@@ -99,11 +99,18 @@ async function saveAppointment(booking, clientName, clientPhone) {
     })
   });
   
+const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    console.error('Сервер вернул не JSON:', text.substring(0, 200));
+    throw new Error('Ошибка сервера. Пожалуйста, попробуйте позже.');
+  }
+
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error || 'Ошибка при сохранении');
   }
-  
+
   return await response.json();
 }
 
