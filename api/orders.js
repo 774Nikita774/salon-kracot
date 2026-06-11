@@ -2,9 +2,8 @@
 const pool = require('../lib/db');
 
 export default async function handler(req, res) {
-  // Разрешаем CORS, если фронтенд и бэкенд на разных доменах (опционально)
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -19,7 +18,9 @@ export default async function handler(req, res) {
       console.error('Ошибка получения заказов:', error);
       res.status(500).json({ error: 'Ошибка сервера при получении заказов' });
     }
-  } else if (req.method === 'POST') {
+  } 
+  
+  else if (req.method === 'POST') {
     const { name, phone, service, date, time } = req.body;
     
     if (!name || !phone || !service || !date || !time) {
@@ -38,7 +39,27 @@ export default async function handler(req, res) {
       console.error('Ошибка создания заказа:', error);
       res.status(500).json({ error: 'Ошибка сервера при создании заказа' });
     }
-  } else {
+  } 
+  
+  else if (req.method === 'DELETE') {
+    // Извлекаем ID из URL (например, /api/orders?id=5 или парсим путь)
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const id = url.searchParams.get('id') || url.pathname.split('/').pop();
+    
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ error: 'Неверный ID заказа' });
+    }
+
+    try {
+      await pool.query('DELETE FROM orders WHERE id = $1', [id]);
+      res.status(200).json({ message: 'Заказ успешно удален' });
+    } catch (error) {
+      console.error('Ошибка удаления заказа:', error);
+      res.status(500).json({ error: 'Ошибка сервера при удалении заказа' });
+    }
+  } 
+  
+  else {
     res.status(405).json({ error: 'Метод не разрешен' });
   }
 }
