@@ -16,11 +16,18 @@ const TIME_SLOTS = [
 async function getBookedSlots(date) {
   try {
     const response = await fetch('/api/orders');
+    
+    // Проверка на HTML-ответ (ошибку сервера)
+    if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) {
+      const errorText = await response.text();
+      console.error('Сервер вернул ошибку вместо JSON:', response.status, errorText.substring(0, 200));
+      return [];
+    }
+
     const orders = await response.json();
-    const bookedSlots = orders
+    return orders
       .filter(order => order.date === date)
       .map(order => order.time);
-    return bookedSlots;
   } catch (error) {
     console.error('Ошибка загрузки слотов:', error);
     return [];
