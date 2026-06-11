@@ -1,5 +1,5 @@
 // api/orders.js
-import sql from '../lib/db.js';
+import sql from '../lib/db.js'; // Теперь sql - это pool из pg
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
