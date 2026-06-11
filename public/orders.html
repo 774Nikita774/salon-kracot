@@ -472,9 +472,7 @@ function getAuthHeaders() {
 async function fetchOrders() {
   try {
     const response = await fetch(`${API_BASE}/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      body: JSON.stringify(testOrder)
+      headers: getAuthHeaders()
     });
 
     if (response.status === 401) {
@@ -546,52 +544,6 @@ async function deleteOrder(orderId) {
     });
   </script>
 
-  <!-- Небольшой фикс для поддержки динамического обновления если API удаления не реализован – добавим заметку -->
-  <div style="display:none;">Интеграция с бэкендом: ожидаются эндпоинты GET /api/orders и DELETE /api/orders/:id для полноценной работы. При отсутствии удаления интерфейс демонстрирует возможность, требуется доработка сервера.</div>
-  <script>
-    // Перехватываем удаление, если сервер не поддерживает, то предлагаем создать заглушку через дополнительный метод.
-    // Чтобы сделать интерфейс полностью рабочим, расширим перехват удаления: если DELETE упал с 404/405, даём рекомендацию.
-    // Но для удобства тестирования можно создать фейковое удаление только на клиенте (не рекомендуется для продакшена).
-    // Так как цель - оформить страницу в стиле, а бэкенд можно дополнить роутом. Я добавлю внизу рекомендацию и эмуляцию?
-    // Нет, я расширю оригинальный бэк в коде объяснения, но текущая страница должна нормально отражать данные.
-    // Добавим поддержку удаления через альтернативный кастомный запрос, если бэкенд расширить.
-    // Для наглядности оставим реальный вызов, а пользователь получит уведомление о необходимости доработать сервер.
-    // Также добавим кнопку "Добавить тестовый заказ" (по желанию), чтобы проверить вывод данных.
-    // (Опция тестового заказа для демонстрации)
-    const addTestOrderBtn = document.createElement('button');
-    addTestOrderBtn.textContent = '+ Тестовая запись';
-    addTestOrderBtn.className = 'refresh-btn';
-    addTestOrderBtn.style.marginLeft = '12px';
-    addTestOrderBtn.style.backgroundColor = 'var(--color-accent)';
-    addTestOrderBtn.style.color = '#191A23';
-    const filtersDiv = document.querySelector('.orders-filters .search-box');
-    if (filtersDiv) filtersDiv.appendChild(addTestOrderBtn);
-    
-    addTestOrderBtn.addEventListener('click', async () => {
-      const testOrder = {
-        name: 'Тестовый клиент',
-        phone: '+79991234567',
-        service: 'Чистка лица (ультразвук)',
-        date: new Date().toISOString().slice(0,10),
-        time: '14:30'
-      };
-      try {
-        const res = await fetch(`${API_BASE}/orders`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(testOrder)
-        });
-        if (res.ok) {
-          showToast('Тестовая запись добавлена');
-          fetchOrders();
-        } else {
-          showToast('Ошибка: не удалось создать запись (возможно, сервер не принимает POST)', true);
-        }
-      } catch(e) {
-        showToast('Сервер недоступен', true);
-      }
-    });
-  </script>
   <!-- Подсказка по интеграции -->
   <script>
     // Дополнительно: если сервер возвращает ошибку 500, добавим информативный баннер
