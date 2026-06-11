@@ -5,8 +5,8 @@
     "dev": "vercel dev"
   },
   "dependencies": {
-    "dotenv": "^17.4.2",
-    "pg": "^8.21.0"
+    "@neondatabase/serverless": "^0.9.4",
+    "dotenv": "^17.4.2"
   },
   "engines": {
     "node": "20.x"
